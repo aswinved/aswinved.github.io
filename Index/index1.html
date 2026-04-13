@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aswindev P — Cloud Security Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #00f5c4;
+    --teal-dim: #00b894;
+    --teal-glow: rgba(0,245,196,0.15);
+    --red: #ff4757;
+    --bg: #050d0f;
+    --bg2: #0a1a1e;
+    --bg3: #0f2329;
+    --text: #c8e6ea;
+    --muted: #5a8a94;
+    --border: rgba(0,245,196,0.2);
+    --font-mono: 'Share Tech Mono', monospace;
+    --font-display: 'Orbitron', sans-serif;
+    --font-body: 'Rajdhani', sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:17px;line-height:1.7;overflow-x:hidden;}
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar{width:4px;}
+  ::-webkit-scrollbar-track{background:var(--bg);}
+  ::-webkit-scrollbar-thumb{background:var(--teal-dim);border-radius:2px;}
+
+  /* CANVAS MATRIX */
+  #matrix-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:0.07;pointer-events:none;}
+
+  /* NAV */
+  nav{position:fixed;top:0;width:100%;z-index:100;background:rgba(5,13,15,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;}
+  .nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .nav-logo{font-family:var(--font-display);font-size:1rem;color:var(--teal);letter-spacing:3px;text-decoration:none;}
+  .nav-logo span{color:var(--text);}
+  .nav-links{display:flex;gap:2rem;list-style:none;}
+  .nav-links a{color:var(--muted);text-decoration:none;font-family:var(--font-mono);font-size:0.8rem;letter-spacing:1px;transition:color 0.2s;text-transform:uppercase;}
+  .nav-links a:hover{color:var(--teal);}
+  .nav-cta{background:transparent;border:1px solid var(--teal);color:var(--teal);padding:0.4rem 1.2rem;font-family:var(--font-mono);font-size:0.75rem;cursor:pointer;transition:all 0.2s;text-decoration:none;letter-spacing:1px;}
+  .nav-cta:hover{background:var(--teal-glow);}
+  .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;}
+  .hamburger span{display:block;width:24px;height:2px;background:var(--teal);}
+
+  /* SECTIONS */
+  section{position:relative;z-index:1;}
+  .container{max-width:1200px;margin:0 auto;padding:0 2rem;}
+
+  /* HERO */
+  #hero{min-height:100vh;display:flex;align-items:center;padding-top:64px;position:relative;overflow:hidden;}
+  .hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;}
+  .hero-tag{font-family:var(--font-mono);font-size:0.75rem;color:var(--teal);letter-spacing:3px;text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;}
+  .hero-tag::before{content:'>';color:var(--teal);}
+  .hero-name{font-family:var(--font-display);font-size:clamp(2.2rem,5vw,4rem);font-weight:900;line-height:1.1;color:#fff;letter-spacing:2px;margin-bottom:0.5rem;}
+  .hero-name .accent{color:var(--teal);}
+  .hero-title{font-family:var(--font-mono);font-size:1rem;color:var(--muted);margin-bottom:1.5rem;min-height:2rem;}
+  .cursor{display:inline-block;width:2px;height:1em;background:var(--teal);margin-left:2px;animation:blink 1s infinite;}
+  @keyframes blink{0%,49%{opacity:1;}50%,100%{opacity:0;}}
+  .hero-desc{color:var(--text);opacity:0.8;max-width:520px;margin-bottom:2rem;font-size:1rem;line-height:1.8;}
+  .hero-btns{display:flex;gap:1rem;flex-wrap:wrap;}
+  .btn-primary{background:var(--teal);color:var(--bg);padding:0.75rem 2rem;font-family:var(--font-display);font-size:0.8rem;font-weight:700;letter-spacing:2px;text-decoration:none;transition:all 0.2s;border:none;cursor:pointer;}
+  .btn-primary:hover{background:#00e0b0;transform:translateY(-2px);}
+  .btn-outline{background:transparent;border:1px solid var(--teal);color:var(--teal);padding:0.75rem 2rem;font-family:var(--font-display);font-size:0.8rem;font-weight:700;letter-spacing:2px;text-decoration:none;transition:all 0.2s;}
+  .btn-outline:hover{background:var(--teal-glow);}
+  .hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2rem;}
+  .hero-stat{border:1px solid var(--border);padding:1rem;text-align:center;background:var(--bg2);}
+  .hero-stat .num{font-family:var(--font-display);font-size:1.8rem;color:var(--teal);font-weight:900;}
+  .hero-stat .lbl{font-family:var(--font-mono);font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+  .hero-visual{position:relative;display:flex;justify-content:center;align-items:center;}
+  .shield-container{position:relative;width:320px;height:320px;}
+  .shield-ring{position:absolute;border-radius:50%;border:1px solid var(--border);animation:rotate 20s linear infinite;}
+  .ring1{width:320px;height:320px;top:0;left:0;border-color:rgba(0,245,196,0.3);}
+  .ring2{width:240px;height:240px;top:40px;left:40px;border-color:rgba(0,245,196,0.2);animation-direction:reverse;animation-duration:15s;}
+  .ring3{width:160px;height:160px;top:80px;left:80px;border-color:rgba(0,245,196,0.15);animation-duration:10s;}
+  @keyframes rotate{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+  .ring1::after,.ring2::after,.ring3::after{content:'';position:absolute;width:8px;height:8px;background:var(--teal);border-radius:50%;top:-4px;left:50%;transform:translateX(-50%);box-shadow:0 0 10px var(--teal);}
+  .shield-core{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
+  .shield-icon{font-size:4rem;filter:drop-shadow(0 0 20px var(--teal));}
+  .shield-label{font-family:var(--font-display);font-size:0.6rem;color:var(--teal);letter-spacing:3px;margin-top:0.5rem;}
+  .hex-badges{position:absolute;width:100%;height:100%;}
+  .hex-badge{position:absolute;font-family:var(--font-mono);font-size:0.55rem;color:var(--teal);background:rgba(0,245,196,0.1);border:1px solid var(--border);padding:3px 6px;white-space:nowrap;}
+  .hex-badge:nth-child(1){top:10%;right:-10%;}
+  .hex-badge:nth-child(2){bottom:25%;right:-15%;}
+  .hex-badge:nth-child(3){bottom:10%;left:5%;}
+  .hex-badge:nth-child(4){top:30%;left:-15%;}
+  .scan-line{position:absolute;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--teal),transparent);animation:scan 3s ease-in-out infinite;opacity:0.5;}
+  @keyframes scan{0%{top:0%;opacity:0;}50%{opacity:1;}100%{top:100%;opacity:0;}}
+
+  /* SECTION HEADERS */
+  .section-header{text-align:center;margin-bottom:4rem;}
+  .section-tag{font-family:var(--font-mono);font-size:0.7rem;color:var(--teal);letter-spacing:3px;text-transform:uppercase;margin-bottom:0.75rem;}
+  .section-title{font-family:var(--font-display);font-size:clamp(1.8rem,3vw,2.8rem);font-weight:900;color:#fff;letter-spacing:2px;}
+  .section-title .dim{color:var(--muted);}
+  .section-line{width:60px;height:2px;background:var(--teal);margin:1rem auto 0;}
+
+  /* ABOUT */
+  #about{padding:6rem 0;background:var(--bg2);}
+  .about-grid{display:grid;grid-template-columns:1fr 1.5fr;gap:4rem;align-items:start;}
+  .about-card{background:var(--bg3);border:1px solid var(--border);padding:2rem;position:relative;overflow:hidden;}
+  .about-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--teal);}
+  .about-avatar{width:80px;height:80px;background:var(--teal-glow);border:2px solid var(--teal);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:1.5rem;font-weight:900;color:var(--teal);margin-bottom:1.5rem;}
+  .about-name{font-family:var(--font-display);font-size:1.2rem;color:#fff;letter-spacing:2px;margin-bottom:0.25rem;}
+  .about-role{font-family:var(--font-mono);font-size:0.75rem;color:var(--teal);margin-bottom:1.5rem;}
+  .about-info-row{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;font-size:0.85rem;}
+  .about-info-row .icon{color:var(--teal);font-size:0.9rem;width:16px;}
+  .about-info-row a{color:var(--teal);text-decoration:none;}
+  .about-info-row a:hover{text-decoration:underline;}
+  .about-text p{margin-bottom:1rem;opacity:0.85;line-height:1.8;}
+  .terminal-box{background:var(--bg);border:1px solid var(--border);padding:1.5rem;margin-top:1.5rem;font-family:var(--font-mono);font-size:0.8rem;}
+  .terminal-box .line{margin-bottom:0.4rem;line-height:1.5;}
+  .terminal-box .prompt{color:var(--teal);}
+  .terminal-box .cmd{color:#fff;}
+  .terminal-box .out{color:var(--muted);}
+
+  /* SKILLS */
+  #skills{padding:6rem 0;}
+  .skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1.5rem;}
+  .skill-cat{background:var(--bg2);border:1px solid var(--border);padding:1.5rem;transition:border-color 0.2s;}
+  .skill-cat:hover{border-color:var(--teal);}
+  .skill-cat-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;}
+  .skill-cat-icon{font-size:1.3rem;}
+  .skill-cat-title{font-family:var(--font-display);font-size:0.85rem;font-weight:700;color:#fff;letter-spacing:1px;}
+  .skill-tags{display:flex;flex-wrap:wrap;gap:0.5rem;}
+  .skill-tag{font-family:var(--font-mono);font-size:0.7rem;padding:4px 10px;border:1px solid var(--border);color:var(--teal);background:rgba(0,245,196,0.05);letter-spacing:0.5px;transition:all 0.2s;cursor:default;}
+  .skill-tag:hover{background:var(--teal-glow);border-color:var(--teal);}
+  .skill-tag.hot{border-color:var(--teal);background:var(--teal-glow);}
+
+  /* EXPERIENCE */
+  #experience{padding:6rem 0;background:var(--bg2);}
+  .timeline{position:relative;padding-left:2rem;}
+  .timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--teal),transparent);}
+  .timeline-item{position:relative;margin-bottom:3rem;padding-left:2rem;}
+  .timeline-dot{position:absolute;left:-2.5rem;top:6px;width:14px;height:14px;background:var(--teal);border:2px solid var(--bg2);transform:rotate(45deg);}
+  .timeline-dot.current{box-shadow:0 0 15px var(--teal);}
+  .timeline-card{background:var(--bg3);border:1px solid var(--border);padding:2rem;position:relative;overflow:hidden;transition:border-color 0.2s;}
+  .timeline-card:hover{border-color:var(--teal);}
+  .timeline-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--teal),transparent);transform:scaleX(0);transform-origin:left;transition:transform 0.3s;}
+  .timeline-card:hover::after{transform:scaleX(1);}
+  .tl-meta{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem;}
+  .tl-company{font-family:var(--font-display);font-size:1rem;color:var(--teal);letter-spacing:2px;font-weight:700;}
+  .tl-period{font-family:var(--font-mono);font-size:0.7rem;color:var(--muted);background:var(--bg2);border:1px solid var(--border);padding:3px 8px;}
+  .tl-role{font-size:1.1rem;color:#fff;font-weight:600;margin-bottom:0.5rem;}
+  .tl-loc{font-family:var(--font-mono);font-size:0.75rem;color:var(--muted);margin-bottom:1rem;}
+  .tl-points{list-style:none;}
+  .tl-points li{padding:0.3rem 0;padding-left:1.2rem;position:relative;font-size:0.92rem;opacity:0.85;}
+  .tl-points li::before{content:'▸';position:absolute;left:0;color:var(--teal);}
+
+  /* PROJECTS */
+  #projects{padding:6rem 0;}
+  .projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1.5rem;}
+  .project-card{background:var(--bg2);border:1px solid var(--border);padding:2rem;position:relative;overflow:hidden;transition:all 0.3s;}
+  .project-card:hover{border-color:var(--teal);transform:translateY(-4px);}
+  .project-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--teal),transparent);transform:scaleX(0);transform-origin:left;transition:transform 0.3s;}
+  .project-card:hover::before{transform:scaleX(1);}
+  .proj-num{font-family:var(--font-display);font-size:2rem;font-weight:900;color:rgba(0,245,196,0.1);position:absolute;top:1rem;right:1.5rem;letter-spacing:2px;}
+  .proj-icon{font-size:1.8rem;margin-bottom:1rem;}
+  .proj-title{font-family:var(--font-display);font-size:1rem;color:#fff;letter-spacing:1px;margin-bottom:0.75rem;font-weight:700;}
+  .proj-desc{font-size:0.9rem;opacity:0.8;margin-bottom:1rem;line-height:1.7;}
+  .proj-tags{display:flex;flex-wrap:wrap;gap:0.4rem;}
+  .proj-tag{font-family:var(--font-mono);font-size:0.65rem;padding:2px 8px;border:1px solid rgba(0,245,196,0.3);color:var(--muted);}
+
+  /* CERTIFICATIONS */
+  #certifications{padding:6rem 0;background:var(--bg2);}
+  .certs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;}
+  .cert-card{background:var(--bg3);border:1px solid var(--border);padding:1.25rem;text-align:center;transition:all 0.2s;cursor:default;}
+  .cert-card:hover{border-color:var(--teal);transform:translateY(-3px);}
+  .cert-provider{font-family:var(--font-display);font-size:0.55rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.5rem;}
+  .cert-provider.azure{color:#0089d6;}
+  .cert-provider.aws{color:#ff9900;}
+  .cert-provider.gcp{color:#4285f4;}
+  .cert-provider.oracle{color:#f80000;}
+  .cert-provider.other{color:var(--teal);}
+  .cert-name{font-size:0.82rem;color:#fff;font-weight:600;line-height:1.4;}
+  .cert-icon{font-size:1.8rem;margin-bottom:0.5rem;display:block;}
+
+  /* AWARDS */
+  #awards{padding:6rem 0;}
+  .awards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;}
+  .award-card{background:var(--bg2);border:1px solid var(--border);padding:2rem;display:flex;gap:1.5rem;align-items:flex-start;transition:border-color 0.2s;}
+  .award-card:hover{border-color:var(--teal);}
+  .award-medal{font-size:2.5rem;flex-shrink:0;filter:drop-shadow(0 0 8px gold);}
+  .award-title{font-family:var(--font-display);font-size:0.9rem;color:#fff;letter-spacing:1px;margin-bottom:0.4rem;font-weight:700;}
+  .award-org{font-family:var(--font-mono);font-size:0.7rem;color:var(--teal);margin-bottom:0.4rem;}
+  .award-desc{font-size:0.85rem;opacity:0.75;}
+
+  /* BLOG */
+  #blog{padding:6rem 0;background:var(--bg2);}
+  .blog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;}
+  .blog-card{background:var(--bg3);border:1px solid var(--border);overflow:hidden;transition:all 0.3s;cursor:pointer;}
+  .blog-card:hover{border-color:var(--teal);transform:translateY(-4px);}
+  .blog-thumb{height:140px;background:linear-gradient(135deg,var(--bg) 0%,var(--bg3) 100%);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+  .blog-thumb-text{font-family:var(--font-mono);font-size:0.6rem;color:var(--teal);opacity:0.5;text-align:center;padding:1rem;line-height:1.4;}
+  .blog-body{padding:1.5rem;}
+  .blog-tag{font-family:var(--font-mono);font-size:0.65rem;color:var(--teal);background:var(--teal-glow);border:1px solid var(--border);padding:2px 8px;display:inline-block;margin-bottom:0.75rem;}
+  .blog-title{font-size:1rem;color:#fff;font-weight:600;margin-bottom:0.5rem;line-height:1.4;}
+  .blog-meta{font-family:var(--font-mono);font-size:0.65rem;color:var(--muted);}
+  .blog-coming-soon{text-align:center;padding:3rem;border:1px dashed var(--border);background:var(--bg3);}
+  .blog-coming-soon p{font-family:var(--font-mono);color:var(--muted);font-size:0.85rem;margin-top:0.5rem;}
+
+  /* CONTACT */
+  #contact{padding:6rem 0;}
+  .contact-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:4rem;align-items:start;}
+  .contact-info h3{font-family:var(--font-display);font-size:1.5rem;color:#fff;letter-spacing:2px;margin-bottom:1rem;}
+  .contact-info p{opacity:0.8;margin-bottom:2rem;line-height:1.8;}
+  .contact-links{display:flex;flex-direction:column;gap:1rem;}
+  .contact-link{display:flex;align-items:center;gap:1rem;padding:1rem;border:1px solid var(--border);background:var(--bg2);text-decoration:none;transition:all 0.2s;}
+  .contact-link:hover{border-color:var(--teal);background:var(--teal-glow);}
+  .contact-link-icon{font-size:1.2rem;width:24px;text-align:center;}
+  .contact-link-text{font-family:var(--font-mono);font-size:0.8rem;color:var(--text);}
+  .contact-link-label{font-size:0.7rem;color:var(--muted);}
+  .contact-form{background:var(--bg2);border:1px solid var(--border);padding:2rem;}
+  .form-group{margin-bottom:1.5rem;}
+  .form-label{font-family:var(--font-mono);font-size:0.7rem;color:var(--teal);letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:0.5rem;}
+  .form-input{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:0.75rem 1rem;font-family:var(--font-body);font-size:0.95rem;outline:none;transition:border-color 0.2s;}
+  .form-input:focus{border-color:var(--teal);}
+  .form-textarea{height:120px;resize:vertical;}
+  .form-submit{width:100%;background:var(--teal);color:var(--bg);border:none;padding:0.85rem;font-family:var(--font-display);font-size:0.85rem;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all 0.2s;}
+  .form-submit:hover{background:#00e0b0;}
+
+  /* FOOTER */
+  footer{background:var(--bg2);border-top:1px solid var(--border);padding:2rem;text-align:center;}
+  .footer-logo{font-family:var(--font-display);font-size:0.9rem;color:var(--teal);letter-spacing:3px;margin-bottom:0.5rem;}
+  .footer-text{font-family:var(--font-mono);font-size:0.7rem;color:var(--muted);}
+
+  /* FADE IN ANIMATION */
+  .fade-in{opacity:0;transform:translateY(30px);transition:all 0.6s ease;}
+  .fade-in.visible{opacity:1;transform:translateY(0);}
+
+  /* RESPONSIVE */
+  @media(max-width:900px){
+    .hero-grid{grid-template-columns:1fr;gap:2rem;}
+    .hero-visual{display:none;}
+    .about-grid{grid-template-columns:1fr;}
+    .contact-grid{grid-template-columns:1fr;}
+    .nav-links,.nav-cta{display:none;}
+    .hamburger{display:flex;}
+  }
+  @media(max-width:600px){
+    .container{padding:0 1rem;}
+    .hero-stats{grid-template-columns:repeat(3,1fr);}
+  }
+
+  /* MOBILE NAV */
+  .mobile-nav{display:none;position:fixed;top:64px;left:0;right:0;z-index:99;background:rgba(5,13,15,0.98);border-bottom:1px solid var(--border);padding:1.5rem;flex-direction:column;gap:1rem;}
+  .mobile-nav.open{display:flex;}
+  .mobile-nav a{font-family:var(--font-mono);font-size:0.9rem;color:var(--text);text-decoration:none;padding:0.5rem;border-bottom:1px solid var(--border);}
+  .mobile-nav a:hover{color:var(--teal);}
+</style>
+</head>
+<body>
+
+<canvas id="matrix-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="#hero">ASWIN<span>DEV</span></a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#certifications">Certs</a></li>
+      <li><a href="#blog">Blog</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a class="nav-cta" href="mailto:aswinved@gmail.com">Hire Me</a>
+    <button class="hamburger" onclick="toggleMobileNav()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-nav" id="mobile-nav">
+  <a href="#about" onclick="closeMobileNav()">About</a>
+  <a href="#skills" onclick="closeMobileNav()">Skills</a>
+  <a href="#experience" onclick="closeMobileNav()">Experience</a>
+  <a href="#projects" onclick="closeMobileNav()">Projects</a>
+  <a href="#certifications" onclick="closeMobileNav()">Certifications</a>
+  <a href="#blog" onclick="closeMobileNav()">Blog</a>
+  <a href="#contact" onclick="closeMobileNav()">Contact</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-tag">Cloud Security Engineer</div>
+        <h1 class="hero-name">ASWIN<br><span class="accent">DEV P.</span></h1>
+        <p class="hero-title"><span id="typed-text"></span><span class="cursor"></span></p>
+        <p class="hero-desc">Cloud security and operations professional with 4 years of enterprise experience. Specializing in Azure infrastructure, identity governance, and continuous security monitoring. Currently securing enterprise at KPMG India.</p>
+        <div class="hero-btns">
+          <a class="btn-primary" href="#contact">Get In Touch</a>
+          <a class="btn-outline" href="#projects">View Projects</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat"><div class="num">4+</div><div class="lbl">Years Exp</div></div>
+          <div class="hero-stat"><div class="num">10+</div><div class="lbl">Certs</div></div>
+          <div class="hero-stat"><div class="num">3✕</div><div class="lbl">Awards</div></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="shield-container">
+          <div class="shield-ring ring1"></div>
+          <div class="shield-ring ring2"></div>
+          <div class="shield-ring ring3"></div>
+          <div class="scan-line"></div>
+          <div class="shield-core">
+            <div class="shield-icon">🔐</div>
+            <div class="shield-label">SC-100</div>
+          </div>
+          <div class="hex-badges">
+            <div class="hex-badge">AZ-500</div>
+            <div class="hex-badge">SC-100</div>
+            <div class="hex-badge">AWS SAA</div>
+            <div class="hex-badge">GCP PCA</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag">// Whoami</div>
+      <h2 class="section-title">ABOUT <span class="dim">ME</span></h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="about-grid">
+      <div class="fade-in">
+        <div class="about-card">
+          <div class="about-avatar">AP</div>
+          <div class="about-name">ASWINDEV P</div>
+          <div class="about-role">// Cloud Security Consultant</div>
+          <div class="about-info-row"><span class="icon">📍</span> Bengaluru, India</div>
+          <div class="about-info-row"><span class="icon">📧</span> <a href="mailto:aswinved@gmail.com">aswinved@gmail.com</a></div>
+          <div class="about-info-row"><span class="icon">📱</span> +91-9947467469</div>
+          <div class="about-info-row"><span class="icon">🔗</span> <a href="https://linkedin.com/in/aswinved" target="_blank">linkedin.com/in/aswinved</a></div>
+          <div class="about-info-row"><span class="icon">🎓</span> BSc CS, University of Calicut, 2022</div>
+        </div>
+        <div class="terminal-box">
+          <div class="line"><span class="prompt">$</span> <span class="cmd">whoami</span></div>
+          <div class="line"><span class="out">aswindev@cloudsec:~</span></div>
+          <div class="line"><span class="prompt">$</span> <span class="cmd">cat current_role.txt</span></div>
+          <div class="line"><span class="out">Consultant @ KPMG India</span></div>
+          <div class="line"><span class="prompt">$</span> <span class="cmd">cat status.txt</span></div>
+          <div class="line"><span class="out">🟢 Open to opportunities</span></div>
+        </div>
+      </div>
+      <div class="about-text fade-in">
+        <p>I'm a Cloud Security and Operations professional with <strong style="color:var(--teal)">4 years of enterprise experience</strong> specializing in Azure infrastructure, identity governance, and continuous security monitoring.</p>
+        <p>Currently serving as a <strong style="color:var(--teal)">Consultant – Cloud Security & Compliance at KPMG India</strong>, where I lead end-to-end technology risk assessments, conduct security audits on enterprise SaaS platforms, and deliver compliance frameworks aligned with CAIQ, SIG, and PCI DSS controls.</p>
+        <p>Previously at Capgemini, I owned L3 enterprise identity operations, designed Azure access reviews, monitored infrastructure using Splunk, and built automation frameworks that significantly reduced manual intervention and improved MTTR.</p>
+        <p>A certified <strong style="color:var(--teal)">Microsoft Cybersecurity Architect (SC-100)</strong> and multi-cloud specialist across Azure, AWS, and GCP — I combine deep technical incident response skills with rigorous compliance and risk management execution.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag">// Tech Stack</div>
+      <h2 class="section-title">CORE <span class="dim">COMPETENCIES</span></h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-cat fade-in">
+        <div class="skill-cat-header">
+          <span class="skill-cat-icon">☁️</span>
+          <span class="skill-cat-title">Cloud Platforms & Tools</span>
+        </div>
+        <div class="skill-tags">
+          <span class="skill-tag hot">Microsoft Azure</span>
+          <span class="skill-tag hot">AWS</span>
+          <span class="skill-tag">Microsoft 365 (M365)</span>
+          <span class="skill-tag hot">Defender for Cloud</span>
+          <span class="skill-tag">Wiz (CSPM)</span>
+          <span class="skill-tag">Splunk</span>
+          <span class="skill-tag">Zscaler</span>
+        </div>
+      </div>
+      <div class="skill-cat fade-in">
+        <div class="skill-cat-header">
+          <span class="skill-cat-icon">🔐</span>
+          <span class="skill-cat-title">Security Operations</span>
+        </div>
+        <div class="skill-tags">
+          <span class="skill-tag hot">Cloud Operational Security</span>
+          <span class="skill-tag hot">Incident Response</span>
+          <span class="skill-tag">Security Breaches Monitoring</span>
+          <span class="skill-tag">Log-Based Investigation</span>
+          <span class="skill-tag">Root Cause Analysis</span>
+          <span class="skill-tag">Threat Triage</span>
+        </div>
+      </div>
+      <div class="skill-cat fade-in">
+        <div class="skill-cat-header">
+          <span class="skill-cat-icon">🛡️</span>
+          <span class="skill-cat-title">Identity & Access</span>
+        </div>
+        <div class="skill-tags">
+          <span class="skill-tag hot">Azure Access Reviews</span>
+          <span class="skill-tag hot">IAM</span>
+          <span class="skill-tag">Admin Consent Workflow</span>
+          <span class="skill-tag">Conditional Access</span>
+          <span class="skill-tag">Privileged Access</span>
+          <span class="skill-tag">Least-Privilege Enforcement</span>
+        </div>
+      </div>
+      <div class="skill-cat fade-in">
+        <div class="skill-cat-header">
+          <span class="skill-cat-icon">📋</span>
+          <span class="skill-cat-title">Governance & Compliance</span>
+        </div>
+        <div class="skill-tags">
+          <span class="skill-tag hot">CAIQ Assessments</span>
+          <span class="skill-tag hot">SIG Lite/Core</span>
+          <span class="skill-tag">PCI DSS</span>
+          <span class="skill-tag">ITGC Controls</span>
+          <span class="skill-tag">Security Audits</span>
+          <span class="skill-tag">Evidence Packaging</span>
+        </div>
+      </div>
+      <div class="skill-cat fade-in">
+        <div class="skill-cat-header">
+          <span class="skill-cat-icon">⚙️</span>
+          <span class="skill-cat-title">Engineering & Automation</span>
+        </div>
+        <div class="skill-tags">
+          <span class="skill-tag hot">PowerShell</span>
+          <span class="skill-tag">Terraform (IaC)</span>
+          <span class="skill-tag">Secure Deployment</span>
+          <span class="skill-tag">Auto-Heal Frameworks</span>
+          <span class="skill-tag">Automated Patching</span>
+          <span class="skill-tag">Health-Check Scripting</span>
+        </div>
+      </div>
+      <div class="skill-cat fade-in">
+        <div class="skill-cat-header">
+          <span class="skill-cat-icon">💻</span>
+          <span class="skill-cat-title">Endpoint Security</span>
+        </div>
+        <div class="skill-tags">
+          <span class="skill-tag hot">Tanium</span>
+          <span class="skill-tag hot">Microsoft Defender for Endpoint</span>
+          <span class="skill-tag">SCCM</span>
+          <span class="skill-tag">Baseline Hardening</span>
+          <span class="skill-tag">Endpoint Telemetry</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag">// Career Path</div>
+      <h2 class="section-title">WORK <span class="dim">EXPERIENCE</span></h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item fade-in">
+        <div class="timeline-dot current"></div>
+        <div class="timeline-card">
+          <div class="tl-meta">
+            <span class="tl-company">KPMG INDIA</span>
+            <span class="tl-period">Jun 2025 – Present</span>
+          </div>
+          <div class="tl-role">Consultant – Cloud Security & Compliance</div>
+          <div class="tl-loc">📍 Bengaluru, India</div>
+          <ul class="tl-points">
+            <li>Led end-to-end technology risk and information security assessments for a global SaaS client, covering CAIQ, SIG Lite/Core, and PCI DSS aligned controls across cloud and hybrid environments.</li>
+            <li>Conduct regular security assessments and audits for enterprise SaaS platforms using Wiz (CSPM), delivering risk ratings and stakeholder-ready summaries aligned with Group standards.</li>
+            <li>Evaluate ITGC, operational resilience, and security controls, focusing on incident response readiness, logging coverage, and robust access governance.</li>
+            <li>Collaborate with IT and dev teams to validate cloud architecture, IAM frameworks, and data flows for secure application deployment.</li>
+            <li>Built structured workpapers with strong evidence traceability, reducing review cycles through accelerated audit-ready evidence packaging.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="timeline-item fade-in">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="tl-meta">
+            <span class="tl-company">CAPGEMINI</span>
+            <span class="tl-period">Jun 2022 – May 2025</span>
+          </div>
+          <div class="tl-role">Cloud Security Engineer – Wintel/Endpoint (L3)</div>
+          <div class="tl-loc">📍 India</div>
+          <ul class="tl-points">
+            <li>Owned L3 operations for enterprise identity — managed admin consent requests and tracked Conditional Access group exceptions for least-privilege enforcement across the Cloud Tenant.</li>
+            <li>Designed and configured Azure access reviews with end-to-end follow-up process management to strengthen IAM posture.</li>
+            <li>Monitored cloud infrastructure for security breaches using Splunk and native alerts; executed incident triage, log-based investigations, and root cause analysis.</li>
+            <li>Automated recurring health checks and hygiene tasks using PowerShell, streamlining audit-ready exports and reducing manual effort.</li>
+            <li>Implemented and tuned observability workflows using Splunk — dashboards, alerts, and log-based investigations for faster remediation.</li>
+            <li>Integrated Splunk AI capabilities to enhance signal triage and alert enrichment, improving operational response efficiency.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag">// Engineering Highlights</div>
+      <h2 class="section-title">KEY <span class="dim">PROJECTS</span></h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="projects-grid">
+      <div class="project-card fade-in">
+        <div class="proj-num">01</div>
+        <div class="proj-icon">🤖</div>
+        <div class="proj-title">AUTO-HEAL FRAMEWORK</div>
+        <div class="proj-desc">Designed and implemented an enterprise Auto-Heal framework capable of analyzing incidents, correlating telemetry, executing remediation playbooks, and autonomously resolving recurring production issues — reducing manual intervention and improving MTTR across critical infrastructure services.</div>
+        <div class="proj-tags">
+          <span class="proj-tag">PowerShell</span>
+          <span class="proj-tag">Automation</span>
+          <span class="proj-tag">MTTR</span>
+          <span class="proj-tag">Incident Response</span>
+          <span class="proj-tag">Telemetry</span>
+        </div>
+      </div>
+      <div class="project-card fade-in">
+        <div class="proj-num">02</div>
+        <div class="proj-icon">📊</div>
+        <div class="proj-title">INFRA OBSERVABILITY DASHBOARDS</div>
+        <div class="proj-desc">Developed site-level production application dashboards integrating infrastructure health, endpoint telemetry, and performance signals — enabling proactive anomaly detection and data-driven incident response using Splunk with AI-enhanced alert enrichment.</div>
+        <div class="proj-tags">
+          <span class="proj-tag">Splunk</span>
+          <span class="proj-tag">Splunk AI</span>
+          <span class="proj-tag">Dashboards</span>
+          <span class="proj-tag">Anomaly Detection</span>
+        </div>
+      </div>
+      <div class="project-card fade-in">
+        <div class="proj-num">03</div>
+        <div class="proj-icon">☁️</div>
+        <div class="proj-title">AWS & AZURE SECURITY CONTROLS</div>
+        <div class="proj-desc">Deployed baseline configurations for centralized logging, network segmentation, and identity least-privilege across AWS and Azure environments. Created reusable runbooks for post-incident response and established security baselines at scale.</div>
+        <div class="proj-tags">
+          <span class="proj-tag">AWS</span>
+          <span class="proj-tag">Azure</span>
+          <span class="proj-tag">IaC</span>
+          <span class="proj-tag">Network Segmentation</span>
+          <span class="proj-tag">Runbooks</span>
+        </div>
+      </div>
+      <div class="project-card fade-in">
+        <div class="proj-num">04</div>
+        <div class="proj-icon">🔄</div>
+        <div class="proj-title">AUTOMATED PATCHING & COMPLIANCE</div>
+        <div class="proj-desc">Engineered automated patching, compliance validation, and health-check scripts across legacy and modern Windows Server environments — eliminating repetitive L1/L2 effort and standardizing secure configuration enforcement at scale using PowerShell.</div>
+        <div class="proj-tags">
+          <span class="proj-tag">PowerShell</span>
+          <span class="proj-tag">Windows Server</span>
+          <span class="proj-tag">Compliance</span>
+          <span class="proj-tag">SCCM</span>
+        </div>
+      </div>
+      <div class="project-card fade-in">
+        <div class="proj-num">05</div>
+        <div class="proj-icon">🔍</div>
+        <div class="proj-title">CSPM RISK ASSESSMENT PROGRAM</div>
+        <div class="proj-desc">Built comprehensive CSPM-driven security audit program at KPMG using Wiz, delivering structured risk ratings and stakeholder-ready reports. Established evidence traceability workflows and SIG/CAIQ assessment frameworks for global enterprise SaaS clients.</div>
+        <div class="proj-tags">
+          <span class="proj-tag">Wiz</span>
+          <span class="proj-tag">CSPM</span>
+          <span class="proj-tag">CAIQ</span>
+          <span class="proj-tag">SIG</span>
+          <span class="proj-tag">Risk Assessment</span>
+        </div>
+      </div>
+      <div class="project-card fade-in" style="border-style:dashed;display:flex;align-items:center;justify-content:center;text-align:center;min-height:280px;">
+        <div>
+          <div style="font-size:2.5rem;margin-bottom:1rem;">⚡</div>
+          <div class="proj-title">MORE COMING SOON</div>
+          <div class="proj-desc" style="margin-top:0.5rem;">Currently building new security tools and open-source projects. Stay tuned!</div>
+          <a href="#contact" class="btn-outline" style="display:inline-block;margin-top:1rem;font-size:0.7rem;padding:0.5rem 1.2rem;">Collaborate →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATIONS -->
+<section id="certifications">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag">// Credentials</div>
+      <h2 class="section-title">CERTIFI<span class="dim">CATIONS</span></h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="certs-grid">
+      <div class="cert-card fade-in">
+        <span class="cert-icon">🔷</span>
+        <div class="cert-provider azure">MICROSOFT AZURE</div>
+        <div class="cert-name">AZ-900: Azure Fundamentals</div>
+      </div>
+      <div class="cert-card fade-in">
+        <span class="cert-icon">🔷</span>
+        <div class="cert-provider azure">MICROSOFT AZURE</div>
+        <div class="cert-name">AZ-104: Azure Administrator</div>
+      </div>
+      <div class="cert-card fade-in">
+        <span class="cert-icon">🔷</span>
+        <div class="cert-provider azure">MICROSOFT AZURE</div>
+        <div class="cert-name">AZ-500: Azure Security Engineer</div>
+      </div>
+      <div class="cert-card fade-in" style="border-color:rgba(0,245,196,0.5);">
+        <span class="cert-icon">🏆</span>
+        <div class="cert-provider azure">MICROSOFT</div>
+        <div class="cert-name">SC-100: Cybersecurity Architect Expert</div>
+      </div>
+      <div class="cert-card fade-in">
+        <span class="cert-icon">🟠</span>
+        <div class="cert-provider aws">AMAZON WEB SERVICES</div>
+        <div class="cert-name">AWS Cloud Practitioner</div>
+      </div>
+      <div class="cert-card fade-in">
+        <span class="cert-icon">🟠</span>
+        <div class="cert-provider aws">AMAZON WEB SERVICES</div>
+        <div class="cert-name">AWS Solutions Architect – Associate</div>
+      </div>
+      <div class="cert-card fade-in">
+        <span class="cert-icon">🔵</span>
+        <div class="cert-provider gcp">GOOGLE CLOUD</div>
+        <div class="cert-name">Associate Cloud Engineer</div>
+      </div>
+      <div class="cert-card fade-in">
+        <span class="cert-icon">🔵</span>
+        <div class="cert-provider gcp">GOOGLE CLOUD</div>
+        <div class="cert-name">Professional Cloud Architect</div>
+      </div>
+      <div class="cert-card fade-in">
+        <span class="cert-icon">🔴</span>
+        <div class="cert-provider oracle">ORACLE CLOUD</div>
+        <div class="cert-name">OCI Generative AI Professional</div>
+      </div>
+      <div class="cert-card fade-in">
+        <span class="cert-icon">🔴</span>
+        <div class="cert-provider oracle">ORACLE CLOUD</div>
+        <div class="cert-name">OCI Foundations Associate</div>
+      </div>
+      <div class="cert-card fade-in">
+        <span class="cert-icon">❄️</span>
+        <div class="cert-provider other">SNOWFLAKE</div>
+        <div class="cert-name">SnowPro Associate</div>
+      </div>
+      <div class="cert-card fade-in">
+        <span class="cert-icon">🐙</span>
+        <div class="cert-provider other">GITHUB</div>
+        <div class="cert-name">GitHub Fundamentals</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AWARDS -->
+<section id="awards">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag">// Achievements</div>
+      <h2 class="section-title">AWARDS & <span class="dim">RECOGNITION</span></h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="awards-grid">
+      <div class="award-card fade-in">
+        <div class="award-medal">🥇</div>
+        <div>
+          <div class="award-title">2× SPOT AWARD</div>
+          <div class="award-org">KPMG India — 2026</div>
+          <div class="award-desc">Recognized twice for exceptional contributions to cloud security consulting and outstanding deliverables.</div>
+        </div>
+      </div>
+      <div class="award-card fade-in">
+        <div class="award-medal">⭐</div>
+        <div>
+          <div class="award-title">RISING STAR AWARD</div>
+          <div class="award-org">KPMG India — 2025</div>
+          <div class="award-desc">Awarded for outstanding performance and rapid impact as a cloud security consultant in the first year.</div>
+        </div>
+      </div>
+      <div class="award-card fade-in">
+        <div class="award-medal">🏆</div>
+        <div>
+          <div class="award-title">TECHNICAL CHAMP AWARD</div>
+          <div class="award-org">Capgemini — 2024</div>
+          <div class="award-desc">Recognized for the Auto-Heal Implementation project that transformed incident response and dramatically improved MTTR.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BLOG -->
+<section id="blog">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag">// Knowledge Base</div>
+      <h2 class="section-title">BLOG & <span class="dim">ARTICLES</span></h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="blog-grid">
+      <div class="blog-card fade-in">
+        <div class="blog-thumb">
+          <div class="blog-thumb-text">IAM_REVIEW.LOG<br>ACCESS DENIED × 3<br>REMEDIATION: ACTIVE<br>STATUS: COMPLIANT ✓</div>
+        </div>
+        <div class="blog-body">
+          <span class="blog-tag">Azure</span>
+          <div class="blog-title">Designing Azure Access Reviews for Enterprise Tenants</div>
+          <div class="blog-meta">Coming Soon • Cloud Security</div>
+        </div>
+      </div>
+      <div class="blog-card fade-in">
+        <div class="blog-thumb">
+          <div class="blog-thumb-text">SPLUNK_ALERT.CONF<br>INDEX=CLOUD_SEC<br>SOURCETYPE=AUDIT<br>ACTION=ALERT ⚡</div>
+        </div>
+        <div class="blog-body">
+          <span class="blog-tag">Splunk</span>
+          <div class="blog-title">Tuning Splunk for Cloud Security Observability</div>
+          <div class="blog-meta">Coming Soon • Security Ops</div>
+        </div>
+      </div>
+      <div class="blog-card fade-in">
+        <div class="blog-thumb">
+          <div class="blog-thumb-text">CAIQ_ASSESSMENT.XLSX<br>TOTAL CONTROLS: 297<br>COMPLIANT: 94.6%<br>EXCEPTIONS: 16 ⚠</div>
+        </div>
+        <div class="blog-body">
+          <span class="blog-tag">Compliance</span>
+          <div class="blog-title">CAIQ vs SIG: Which Framework Fits Your Cloud Audit?</div>
+          <div class="blog-meta">Coming Soon • GRC</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:1.5rem;" class="fade-in">
+      <div class="blog-coming-soon">
+        <div style="font-size:2rem;">✍️</div>
+        <p>Full blog launching soon — deep dives into cloud security, IAM, compliance frameworks, and automation. Follow on LinkedIn for updates!</p>
+        <a href="https://linkedin.com/in/aswinved" target="_blank" class="btn-outline" style="display:inline-block;margin-top:1rem;font-size:0.75rem;padding:0.6rem 1.5rem;">Follow on LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag">// Let's Connect</div>
+      <h2 class="section-title">GET IN <span class="dim">TOUCH</span></h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="contact-grid">
+      <div class="fade-in">
+        <div class="contact-info">
+          <h3>OPEN TO OPPORTUNITIES</h3>
+          <p>Whether you're looking for a cloud security consultant, want to collaborate on a project, or just want to talk security — my inbox is always open.</p>
+        </div>
+        <div class="contact-links">
+          <a class="contact-link" href="mailto:aswinved@gmail.com">
+            <span class="contact-link-icon">📧</span>
+            <div>
+              <div class="contact-link-text">aswinved@gmail.com</div>
+              <div class="contact-link-label">Email</div>
+            </div>
+          </a>
+          <a class="contact-link" href="https://linkedin.com/in/aswinved" target="_blank">
+            <span class="contact-link-icon">🔗</span>
+            <div>
+              <div class="contact-link-text">linkedin.com/in/aswinved</div>
+              <div class="contact-link-label">LinkedIn</div>
+            </div>
+          </a>
+          <a class="contact-link" href="tel:+919947467469">
+            <span class="contact-link-icon">📱</span>
+            <div>
+              <div class="contact-link-text">+91-9947467469</div>
+              <div class="contact-link-label">Phone / WhatsApp</div>
+            </div>
+          </a>
+          <a class="contact-link" href="#" onclick="alert('Location: Bengaluru, India')">
+            <span class="contact-link-icon">📍</span>
+            <div>
+              <div class="contact-link-text">Bengaluru, India</div>
+              <div class="contact-link-label">Location (Open to Remote)</div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="fade-in">
+        <div class="contact-form">
+          <div class="form-group">
+            <label class="form-label">Your Name</label>
+            <input type="text" class="form-input" placeholder="John Doe">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-input" placeholder="john@company.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Subject</label>
+            <input type="text" class="form-input" placeholder="Project Collaboration / Hiring...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message</label>
+            <textarea class="form-input form-textarea" placeholder="Tell me about your project or opportunity..."></textarea>
+          </div>
+          <button class="form-submit" onclick="handleSubmit()">SEND MESSAGE ▶</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">ASWINDEV P.</div>
+  <div class="footer-text">© 2026 Aswindev P. | Cloud Security Consultant | Built with ❤️ and ☕ in Bengaluru</div>
+  <div style="margin-top:0.75rem;font-family:var(--font-mono);font-size:0.65rem;color:var(--muted);">SC-100 | AZ-500 | AWS SAA | GCP PCA | KPMG India</div>
+</footer>
+
+<script>
+// MATRIX RAIN
+(function(){
+  const canvas = document.getElementById('matrix-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const chars = '01アイウエオカキクケコABCDEFGHIJKLMNOPQRSTUVWXYZ<>{}[]()∑∆∇λ';
+  const fontSize = 13;
+  const cols = Math.floor(canvas.width / fontSize);
+  const drops = Array(cols).fill(1);
+  function draw(){
+    ctx.fillStyle = 'rgba(5,13,15,0.05)';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#00f5c4';
+    ctx.font = fontSize + 'px Share Tech Mono';
+    for(let i=0;i<drops.length;i++){
+      const text = chars[Math.floor(Math.random()*chars.length)];
+      ctx.fillStyle = Math.random()>0.98 ? '#fff' : '#00f5c4';
+      ctx.fillText(text, i*fontSize, drops[i]*fontSize);
+      if(drops[i]*fontSize > canvas.height && Math.random()>0.975) drops[i]=0;
+      drops[i]++;
+    }
+  }
+  setInterval(draw,50);
+  window.addEventListener('resize',()=>{
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+  });
+})();
+
+// TYPING ANIMATION
+(function(){
+  const phrases = [
+    'Cloud Security Consultant @ KPMG',
+    'Microsoft Cybersecurity Architect (SC-100)',
+    'Azure | AWS | GCP Certified',
+    'IAM & Identity Governance Expert',
+    'Threat Detection & Incident Response',
+    'Compliance & Risk Management Pro',
+  ];
+  let pi=0, ci=0, deleting=false;
+  const el = document.getElementById('typed-text');
+  function type(){
+    const phrase = phrases[pi];
+    if(!deleting){
+      el.textContent = phrase.substring(0,ci+1);
+      ci++;
+      if(ci===phrase.length){ deleting=true; setTimeout(type,2000); return; }
+    } else {
+      el.textContent = phrase.substring(0,ci-1);
+      ci--;
+      if(ci===0){ deleting=false; pi=(pi+1)%phrases.length; }
+    }
+    setTimeout(type, deleting?50:80);
+  }
+  type();
+})();
+
+// FADE IN ON SCROLL
+(function(){
+  const els = document.querySelectorAll('.fade-in');
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+  },{threshold:0.1});
+  els.forEach(el=>obs.observe(el));
+})();
+
+// MOBILE NAV
+function toggleMobileNav(){
+  document.getElementById('mobile-nav').classList.toggle('open');
+}
+function closeMobileNav(){
+  document.getElementById('mobile-nav').classList.remove('open');
+}
+
+// FORM
+function handleSubmit(){
+  const btn = document.querySelector('.form-submit');
+  btn.textContent = 'SENDING...';
+  btn.style.background = '#005c47';
+  setTimeout(()=>{
+    btn.textContent = '✓ MESSAGE SENT!';
+    btn.style.background = '#00b894';
+    setTimeout(()=>{
+      btn.textContent = 'SEND MESSAGE ▶';
+      btn.style.background = '';
+    }, 3000);
+  }, 1200);
+}
+
+// ACTIVE NAV
+window.addEventListener('scroll',()=>{
+  const sections = ['hero','about','skills','experience','projects','certifications','blog','contact'];
+  const links = document.querySelectorAll('.nav-links a');
+  let current = '';
+  sections.forEach(id=>{
+    const sec = document.getElementById(id);
+    if(sec && window.scrollY >= sec.offsetTop - 100) current = id;
+  });
+  links.forEach(l=>{
+    l.style.color = l.getAttribute('href')==='#'+current ? 'var(--teal)' : '';
+  });
+});
+</script>
+</body>
+</html>
